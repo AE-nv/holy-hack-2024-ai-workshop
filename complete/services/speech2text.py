@@ -4,6 +4,9 @@ import os
 
 def transcribe(file):
     """
+    Transcribe a file using the Whisper model on the Azure OpenAI Service
+
+    See: https://platform.openai.com/docs/guides/speech-to-text/quickstart 
     """
 
     # Azure openAI Whisper call

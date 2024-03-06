@@ -22,14 +22,11 @@ def get_img_with_href(local_img_path, target_url, style):
         </a>'''
     return html_code
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
+
 st.set_page_config(page_title="Air Data Bot",
                    page_icon=":robot_face:")
 
 load_dotenv()  # take environment variables from .env.
-
-
 
 # settings
 QDRANT_COLLECTION_NAME = "AIR_DATA"
@@ -44,6 +41,7 @@ def init_qdrantdb():
 
     return QDrantCustomClient(collection_name=QDRANT_COLLECTION_NAME,
                         embedding_function=embedding_function)
+
 @st.cache_resource
 def init_semanticRouter():
     """
@@ -103,22 +101,6 @@ if prompt := st.chat_input("What is up?"):
         st.markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
 
-    ### Functionality 3 - Chatbot
-    
-    response, rag_context = semantic_router(st.session_state["messages"], selected_collection)
-
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        st.markdown(response)
-        if rag_context is not None:
-            print("Adding rag context")
-            st.markdown("**sources**")
-            for idx, doc in enumerate(rag_context):
-                st.markdown(f"**{idx+1}.**")
-                st.markdown(f"{doc.page_content}")
-
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    ### TODO: Functionality 3 - Chatbot
 

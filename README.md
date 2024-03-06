@@ -9,7 +9,8 @@ We will divide this workshop into 4 parts:
 - Transcribing audio files using **Whisper**
 - 
 
-
+## 0. Set up configuration
+Download the `.env` file.
 
 ## 1. Setting up QDrant
 This should be the easiest step! Make sure you have you Docker desktop running.
@@ -23,3 +24,6 @@ This will spin up a docker container with a vector database called **QDrant** ru
 
 ## 2. Transcribing audio files using **Whisper**
 
+## 3. Implement RAG retrieval strategies
+
+## 4. Implement Chatbot functionality with **Semantic Routing**
