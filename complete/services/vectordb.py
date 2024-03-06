@@ -11,12 +11,24 @@ QDRANT_PORT = "6333"
 class SearchMethod(Enum):
     SCORE = 0
     MMR = 1
+    """
+    Enum for search methods. SCORE for simple scoring, MMR for Maximal Marginal Relevance.
+    """
 
 class QDrantCustomClient:
+    """
+    A custom client for interfacing with Qdrant, a vector search engine. This client abstracts
+    some of the operations on collections and documents, allowing for simplified document management
+    and search functionalities.
+    """
 
     def __init__(self, collection_name, embedding_function) -> None:
         """
-            Initialize QDrant client
+        Initializes a new instance of the QDrantCustomClient class.
+
+        Args:
+            collection_name (str): The name of the collection to operate on.
+            embedding_function: A function that generates embeddings from documents.
         """
         self._client = QdrantClient(url=QDRANT_URL, port=QDRANT_PORT)
 
@@ -30,7 +42,15 @@ class QDrantCustomClient:
         
     def __call__(self, query : str, collection_name : str, method : SearchMethod = SearchMethod.MMR):
         """
-            Perform similarity search on QDrant Vector DB
+        Performs a similarity search on a Qdrant Vector DB using the specified search method.
+
+        Args:
+            query (str): The search query.
+            collection_name (str): The name of the collection to search in.
+            method (SearchMethod): The search method to use. Defaults to MMR.
+
+        Returns:
+            The search results.
         """
 
         self._qdrant.collection_name = collection_name
@@ -47,6 +67,14 @@ class QDrantCustomClient:
 
     def add_documents(self, docs : List[Document], collection_name : str = None):
         """
+        Adds documents to the specified collection.
+
+        Args:
+            docs (List[Document]): A list of documents to add.
+            collection_name (str, optional): The name of the collection. Defaults to the initialized collection name.
+
+        Returns:
+            The IDs of the added documents.
         """
         if collection_name is None:
             collection_name = self._collection_name
@@ -64,6 +92,15 @@ class QDrantCustomClient:
 
     def _mmr(self, query : str, k : int = 4, fetch_k : int = 10):
         """
+        Performs a Maximal Marginal Relevance (MMR) search.
+
+        Args:
+            query (str): The search query.
+            k (int): The number of results to return.
+            fetch_k (int): The number of results to fetch for relevance calculation.
+
+        Returns:
+            The search results.
         """
 
         found_docs = self._qdrant.max_marginal_relevance_search(query, k=k, fetch_k=fetch_k)
@@ -73,6 +110,14 @@ class QDrantCustomClient:
 
     def _score(self, query : str, k : int = 4):
         """
+        Performs a search based on similarity scoring.
+
+        Args:
+            query (str): The search query.
+            k (int): The number of results to return.
+
+        Returns:
+            The search results.
         """
 
         found_docs = self._qdrant.similarity_search_with_score(query, k=k)
@@ -81,6 +126,14 @@ class QDrantCustomClient:
     
     def _simsearch(self, query : str, k : int = 4):
         """
+        Performs a basic similarity search.
+
+        Args:
+            query (str): The search query.
+            k (int): The number of results to return.
+
+        Returns:
+            The search results.
         """
 
         found_docs = self._qdrant.similarity_search(query, k=k)
@@ -90,6 +143,10 @@ class QDrantCustomClient:
     
     def create_collection(self, collection_name : str):
         """
+        Creates a new collection with the specified name if it doesn't already exist.
+
+        Args:
+            collection_name (str): The name of the collection to create.
         """
 
         # check if collection name already exists
@@ -104,6 +161,10 @@ class QDrantCustomClient:
 
     def get_collections(self):
         """
+        Retrieves a list of all collection names.
+
+        Returns:
+            A list of collection names.
         """
         collectionResponse = self._client.get_collections()
 
@@ -111,6 +172,7 @@ class QDrantCustomClient:
 
     def delete_collections(self):
         """
+        Deletes all collections managed by this client.
         """
         
         collections = self.get_collections()
@@ -119,6 +181,10 @@ class QDrantCustomClient:
     
     def delete_collection(self, collection_name : str):
         """
+        Deletes a specific collection by name.
+
+        Args:
+            collection_name (str): The name of the collection to delete.
         """
 
         if collection_name in self.get_collections():
@@ -128,6 +194,13 @@ class QDrantCustomClient:
 
     def get_collection_details(self, collection_name):
         """
+        Retrieves details for a specific collection.
+
+        Args:
+            collection_name (str): The name of the collection.
+
+        Returns:
+            A dictionary containing details of the collection, such as vector count.
         """
 
         coll = self._client.get_collection(collection_name)
