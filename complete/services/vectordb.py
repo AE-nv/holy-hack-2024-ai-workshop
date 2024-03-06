@@ -28,10 +28,12 @@ class QDrantCustomClient:
 
         
         
-    def __call__(self, query : str, method : SearchMethod = SearchMethod.MMR):
+    def __call__(self, query : str, collection_name : str, method : SearchMethod = SearchMethod.MMR):
         """
             Perform similarity search on QDrant Vector DB
         """
+
+        self._qdrant.collection_name = collection_name
 
         if method == SearchMethod.MMR:
             return self._mmr(query)
@@ -60,28 +62,28 @@ class QDrantCustomClient:
 
 
 
-    def _mmr(self, query : str, k : int = 2, fetch_k : int = 10):
+    def _mmr(self, query : str, k : int = 4, fetch_k : int = 10):
         """
         """
 
-        found_docs = self._qdrant.max_marginal_relevance_search(query, k=2, fetch_k=10)
+        found_docs = self._qdrant.max_marginal_relevance_search(query, k=k, fetch_k=fetch_k)
     
         return found_docs
     
 
-    def _score(self, query : str):
+    def _score(self, query : str, k : int = 4):
         """
         """
 
-        found_docs = self._qdrant.similarity_search_with_score(query)
+        found_docs = self._qdrant.similarity_search_with_score(query, k=k)
 
         return found_docs
     
-    def _simsearch(self, query : str):
+    def _simsearch(self, query : str, k : int = 4):
         """
         """
 
-        found_docs = self._qdrant.similarity_search(query)
+        found_docs = self._qdrant.similarity_search(query, k=k)
 
         return found_docs
     
