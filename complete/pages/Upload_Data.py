@@ -5,9 +5,8 @@ from services import transcribe, default_splitter, semantic_splitter
 from dotenv import load_dotenv
 from app import init_qdrantdb
 
-add_page_title()
-
-show_pages_from_config()
+st.set_page_config(page_title="Upload Data",
+                   page_icon=":books:")
 
 load_dotenv()  # take environment variables from .env.
 
@@ -95,6 +94,7 @@ def upload_files():
             doc_ids = qdrant_client.add_documents(docs, st.session_state["selected_collection"])
             
 
+st.markdown(" # Upload Data")
 col1, col2 = st.columns(2)
 
 with col1:

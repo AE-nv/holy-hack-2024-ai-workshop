@@ -3,12 +3,29 @@ from st_pages import show_pages_from_config, add_page_title
 from services import QDrantCustomClient, SemanticRouter
 from langchain_openai import AzureOpenAIEmbeddings
 from dotenv import load_dotenv
+import os
+import base64
+
+@st.cache_data()
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode("utf-8")
+
+@st.cache_data()
+def get_img_with_href(local_img_path, target_url, style):
+    img_format = os.path.splitext(local_img_path)[-1].replace('.', '')
+    bin_str = get_base64_of_bin_file(local_img_path)
+    html_code = f'''
+        <a href="{target_url}">
+            <img src="data:image/{img_format};base64,{bin_str}" style="{style}" />
+        </a>'''
+    return html_code
 
 # Either this or add_indentation() MUST be called on each page in your
 # app to add indendation in the sidebar
-add_page_title()
-
-show_pages_from_config()
+st.set_page_config(page_title="Air Data Bot",
+                   page_icon=":robot_face:")
 
 load_dotenv()  # take environment variables from .env.
 
@@ -50,14 +67,25 @@ if "selected_collection" not in st.session_state:
 selected_collection = st.session_state["selected_collection"]
 
 welcome_message = """
-Welcome to the Air Data Chatbot!
+### Welcome to the Air Data Chatbot!
 
-This chatbot knows all about the podcast Air Data (add link) and can answer any questions you may have.
+This chatbot knows all about the Air Data Podcast and can answer any questions you may have!
+To start, you should upload the recordings of your favorite episodes. 
 
 """
 
+st.markdown(" # Air Data Bot")
 
-st.text(welcome_message)
+col1, col2 = st.columns(2)
+with col1:
+    st.markdown(welcome_message)
+with col2:
+    st.markdown(get_img_with_href('images/air_data_icon.jpeg', 
+                                  'https://open.spotify.com/show/3mzyyFmEjQ3ssdDaxyVDI0', 
+                                  style="width:300px;"
+                                  ),
+                unsafe_allow_html=True
+                )
 
 # Initialize chat history
 if "messages" not in st.session_state:

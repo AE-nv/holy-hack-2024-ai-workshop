@@ -1,9 +1,0 @@
-[[pages]]
-path = "app.py"
-name = "Air Data Bot"
-icon = ":robot_face:"
-
-[[pages]]
-path = "pages/page_upload.py"
-name = "Upload podcast"
-icon = ":books:"

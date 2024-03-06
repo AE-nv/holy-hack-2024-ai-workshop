@@ -2,7 +2,7 @@
 name = "holy-hack-2024-ai-workshop"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Dionys Nabarro <dionys.nabarro@ae.be>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
