@@ -3,7 +3,7 @@ import streamlit as st
 import os
 from services import transcribe, default_splitter, semantic_splitter
 from dotenv import load_dotenv
-from app import init_qdrantdb
+from Home import init_qdrantdb
 
 st.set_page_config(page_title="Upload Data",
                    page_icon=":books:")

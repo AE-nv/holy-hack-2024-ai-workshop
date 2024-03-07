@@ -9,8 +9,9 @@ QDRANT_URL = "http://localhost"
 QDRANT_PORT = "6333"
 
 class SearchMethod(Enum):
-    SCORE = 0
-    MMR = 1
+    SCORE = "score"
+    SIMSEARCH = "simsearch"
+    MMR = "mmr"
     """
     Enum for search methods. SCORE for simple scoring, MMR for Maximal Marginal Relevance.
     """
@@ -108,7 +109,7 @@ class QDrantCustomClient:
 
     def _score(self, query : str, k : int = 4):
         """
-        TODO: Performs a search based on similarity scoring.
+        TODO: Performs a similarity search returning the scores as well
 
         Args:
             query (str): The search query.
@@ -123,7 +124,7 @@ class QDrantCustomClient:
     
     def _simsearch(self, query : str, k : int = 4):
         """
-        TODO: Performs a basic similarity search.
+        TODO: Performs a basic similarity search
 
         Args:
             query (str): The search query.

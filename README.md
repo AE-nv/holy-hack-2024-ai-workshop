@@ -10,7 +10,20 @@ We will divide this workshop into 4 parts:
 - 
 
 ## 0. Set up configuration
-Download the `.env` file.
+Download the `.env` file. Make sure it is called .env.
+
+### With Poetry 
+...
+
+In order to make sure the environment is made in your root folder, run the following line
+
+`poetry config virtualenvs.in-project true`
+
+Run `Poetry install` in the root folder. This will install the dependencies defined in pyproject.toml
+
+### With Virtualenv
+...
+
 
 ## 1. Setting up QDrant
 This should be the easiest step! Make sure you have you Docker desktop running.
@@ -19,8 +32,13 @@ run the command
 
 `docker-compose up -d`
 
+The -d flag simply means that we are detached from the container such that the terminal is not occupied.
+
 This will spin up a docker container with a vector database called **QDrant** running on it.
 
+Go back to your root folder. Now you can run the streamlit app for the first time with
+
+`streamlit run Home.py`
 
 ## 2. Transcribing audio files using **Whisper**
 
@@ -49,7 +67,11 @@ This function should also be called in *pages/Upload_Data.py* after the transcri
 Lastly we need to add the chunked text to the vector database. The QDrantCustomClient can be used for this. 
 Don't worry about calculating embeddings, the client has this covered.
 
+In the *pages/Upload_Data.py* finish the set of function calls. You can use the **QDRantCustomClient** which is available as `qdrant_client`. Checkout the `services/vectordb.py` to find out which function to call.
 
 ## 3. Implement RAG retrieval strategies
 
+We will implement three simple retrievers:
+- `score`
+- `
 ## 4. Implement Chatbot functionality with **Semantic Routing**

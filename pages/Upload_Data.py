@@ -57,7 +57,7 @@ def upload_files():
             if file_size / 1e6 < 25:
                 ### TODO: Functionality 1 - Transcribe Audio files and upload to QDrant Vector Database
                 print("Not Implemented yet.")
-                # transcribe wav file
+                # transcribe mp3 file
                 
                 # save transcript to local folder
                 

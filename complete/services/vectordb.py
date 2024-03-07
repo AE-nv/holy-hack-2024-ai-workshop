@@ -9,8 +9,9 @@ QDRANT_URL = "http://localhost"
 QDRANT_PORT = "6333"
 
 class SearchMethod(Enum):
-    SCORE = 0
-    MMR = 1
+    SCORE = "score"
+    SIMSEARCH = "simsearch"
+    MMR = "mmr"
     """
     Enum for search methods. SCORE for simple scoring, MMR for Maximal Marginal Relevance.
     """
