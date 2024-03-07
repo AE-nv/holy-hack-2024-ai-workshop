@@ -41,30 +41,33 @@ class SemanticRouter:
                 "what do you know about data visualization?",
                 "What did they say about pie charts?",
                 "What did they talk about in this episode?",
-                "Wat vinden ze van het nieuwe decor?"
+                "Wat vinden ze van het nieuwe decor?",
                 "what are the key takeaways of the air data podcast?"
             ]
         )
         self._routes = [greetings_router, airdata_router]
         
+         # create route layer
         self._dl = RouteLayer(encoder=self._encoder, routes=self._routes)
 
         self._sim_method = SearchMethod.MMR
 
         self._system_prompt_template = """
             You are a chatbot that has access to transcripts of the AE Air Data Podcast. Always tell the user that you found information from the Air Data Podcast. Here is the context that was found with RAG when searching for the user's question:
+            <context>
             {rag_context}
+            <context>
         """
-    def __call__(self, query : List, collection_name : str):
+    def __call__(self, chat_history : List, collection_name : str):
         """
         """
-        return self.semantic_layer(query, collection_name)
+        return self.semantic_layer(chat_history, collection_name)
 
-    def semantic_layer(self, query : List, collection_name : str):
+    def semantic_layer(self, chat_history : List, collection_name : str):
         """
         """
 
-        last_user_message = query[-1]['content']
+        last_user_message = chat_history[-1]['content']
 
         route = self._dl(last_user_message)
         print(route)
@@ -74,31 +77,31 @@ class SemanticRouter:
             return self._rag_completion(last_user_message, collection_name)
         
         else:
-            return self._chitchat_completion(last_user_message)
+            return self._nonsense(last_user_message)
 
 
-    def _nonsense(self, query : str):
+    def _nonsense(self, chat_history : str):
         """
         """
-        return "Couldn't find a route for this request"
+        return "That does not seem relevant to me", None
     
-    def _chitchat_completion(self, query : str):
+    def _chitchat_completion(self, chat_history : str):
         """
         """
-        return self._chat_model.invoke(query).content, None
+        return self._chat_model.invoke(chat_history).content, None
     
-    def _rag_completion(self, query : str, collection_name : str):
+    def _rag_completion(self, chat_history : str, collection_name : str):
         """
         """
 
         # perform RAG
-        hits = self._vectordb(query, collection_name, self._sim_method)
+        hits = self._vectordb(chat_history, collection_name, self._sim_method)
 
         # call completion with context from hits
         context = "\n".join([doc.page_content for doc in hits])
         messages = [
             SystemMessage(content=self._system_prompt_template.format(rag_context=context)),
-            HumanMessage(content=query)
+            HumanMessage(content=chat_history)
         ]
         resp = self._chat_model.invoke(messages)
 

@@ -73,5 +73,14 @@ In the *pages/Upload_Data.py* finish the set of function calls. You can use the 
 
 We will implement three simple retrievers:
 - `score`
-- `
+- `simsearch`
+- `mmr` : Maximal Marginal Relevance
+
+These can be found in the **QdrantCustomClient** in the `services/vectordb.py` file.
+You can use the **QDrant** object of the class to perform the retrievals.
+
+After this you can test the retrievers on the RAG page.
+
 ## 4. Implement Chatbot functionality with **Semantic Routing**
+
+

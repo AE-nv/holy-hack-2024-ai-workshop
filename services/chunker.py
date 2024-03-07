@@ -24,13 +24,13 @@ from langchain_openai import AzureOpenAIEmbeddings
 def default_splitter(text : str, chunk_size : int = 150, chunk_overlap : int = 50):
     """
     TODO: Split a text using the RecursiveCharacterTextSplitter.
+    LangChain Reference: 
 
     :param text_files:      List of paths to files
     :param chunk_size:      The number of characters in one chunk
     :param chunk_overlap:   The overlap between two chunks
     """
     # create text splitter
-
 
     # split documents with text splitter
     print("Not Implemented Yet.")
@@ -42,6 +42,7 @@ def default_splitter(text : str, chunk_size : int = 150, chunk_overlap : int = 5
 def semantic_splitter(text : str, embedding_function : AzureOpenAIEmbeddings):
     """
     TODO: Split a text using the Semantic Chunker.
+    Langchain Reference: 
 
     :param text_files:          List of paths to files
     :param embedding_function:  AzureOpenAIEmbeddings object used to compare sentence embeddings

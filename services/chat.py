@@ -11,7 +11,10 @@ import os
 from typing import List
 
 class SemanticRouter:
-
+    """
+    add description and link to github page
+    
+    """
     def __init__(self, vectordb : QDrantCustomClient) -> None:
 
         self._vectordb = vectordb

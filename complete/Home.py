@@ -1,10 +1,25 @@
 import streamlit as st
-from st_pages import show_pages_from_config, add_page_title
+from st_pages import Page, add_page_title, show_pages
 from services import QDrantCustomClient, SemanticRouter
 from langchain_openai import AzureOpenAIEmbeddings
 from dotenv import load_dotenv
 import os
 import base64
+
+st.set_page_config(page_title="Air Data Bot",
+                   page_icon=":robot_face:",
+                   layout="wide")
+
+# Specify what pages should be shown in the sidebar, and what their titles and icons
+# should be
+show_pages(
+    [
+        Page("pages/Upload_Data.py", "Upload Data", ":books:"),
+        Page("pages/RAG.py", "RAG", ":mag:"),
+        Page("Home.py", "Air Data Bot", ":robot_face:")
+    ]
+)
+
 
 @st.cache_data()
 def get_base64_of_bin_file(bin_file):
@@ -22,14 +37,7 @@ def get_img_with_href(local_img_path, target_url, style):
         </a>'''
     return html_code
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
-st.set_page_config(page_title="Air Data Bot",
-                   page_icon=":robot_face:")
-
 load_dotenv()  # take environment variables from .env.
-
-
 
 # settings
 QDRANT_COLLECTION_NAME = "AIR_DATA"
@@ -74,7 +82,7 @@ To start, you should upload the recordings of your favorite episodes.
 
 """
 
-st.markdown(" # Air Data Bot")
+st.markdown(" # :robot_face: Air Data Bot")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -106,7 +114,6 @@ if prompt := st.chat_input("What is up?"):
     
 
     ### Functionality 3 - Chatbot
-    
     response, rag_context = semantic_router(st.session_state["messages"], selected_collection)
 
     # Display assistant response in chat message container

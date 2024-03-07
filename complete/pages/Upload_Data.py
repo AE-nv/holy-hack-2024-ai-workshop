@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from Home import init_qdrantdb
 
 st.set_page_config(page_title="Upload Data",
-                   page_icon=":books:")
+                   page_icon=":books:",
+                   layout="wide")
 
 load_dotenv()  # take environment variables from .env.
 
@@ -55,7 +56,7 @@ def upload_files():
         if ext in ['mp3', 'mp4', 'wav']:
             file_size = file.size
             if file_size / 1e6 < 25:
-                # transcribe wav file
+                # transcribe mp3 file
                 transcript = transcribe(file)
 
                 # save transcript to folder
@@ -94,38 +95,36 @@ def upload_files():
             doc_ids = qdrant_client.add_documents(docs, st.session_state["selected_collection"])
             
 
-st.markdown(" # Upload Data")
-col1, col2 = st.columns(2)
+st.markdown(" # :books: Upload Data")
 
-with col1:
-    st.header("Collection")
-    with st.container(border=True):
-        # Text input for user to enter a new option
-        st.text_input("Enter new collection Name", key='new_collection_name', on_change=None)
+# upload files 
+st.header("1.File upload")
+with st.container(border=True):
+    files = st.file_uploader("Air Data files", accept_multiple_files=True, key="uploaded_files")
 
-        # Button to add the new option to the list
-        st.button("Add Collection", on_click=add_collection)
+    st.button("Upload files to collection", on_click=upload_files)
 
-        # Selectbox displaying current options with a callback to select an option
-        selected_collection = st.selectbox("Choose a collection", options=st.session_state["collection_options"], index=st.session_state["collection_options"].index(st.session_state["selected_collection"]))
-        st.session_state["selected_collection"] = selected_collection
-        st.text(qdrant_client.get_collection_details(st.session_state['selected_collection']))
+# select splitter function
+st.header("2.Splitter")
+with st.container(border=True): 
+    selected_splitter = st.selectbox("Splitter function", ["recursive text", "semantic"])
 
-        # Button to remove the selected option from the list
-        st.button("Remove Selected collectionn", on_click=remove_collection)
+st.header("3.Collection")
+with st.container(border=True):
+    # Text input for user to enter a new option
+    st.text_input("Enter new collection Name", key='new_collection_name', on_change=None)
 
-    # select splitter function
-    st.header("Splitter")
-    with st.container(border=True): 
-        selected_splitter = st.selectbox("Splitter function", ["recursive text", "semantic"])
+    # Button to add the new option to the list
+    st.button("Add Collection", on_click=add_collection)
 
-with col2:
-    # upload files 
-    st.header("File upload")
-    with st.container(border=True):
-        files = st.file_uploader("Air Data files", accept_multiple_files=True, key="uploaded_files")
+    # Selectbox displaying current options with a callback to select an option
+    selected_collection = st.selectbox("Choose a collection", options=st.session_state["collection_options"], index=st.session_state["collection_options"].index(st.session_state["selected_collection"]))
+    st.session_state["selected_collection"] = selected_collection
+    st.text(qdrant_client.get_collection_details(st.session_state['selected_collection']))
 
-        st.button("Upload files to collection", on_click=upload_files)
+    # Button to remove the selected option from the list
+    st.button("Remove Selected collectionn", on_click=remove_collection)
+
 
 
 
