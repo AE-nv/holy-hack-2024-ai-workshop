@@ -31,10 +31,24 @@ Open up the `services/speech2text.py` file.
 Complete the `transcribe` function such that it transcribes a file given by the streamlit `st.FileUploader()`.
 The function should be called in *pages/Upload_Data.py*.
 
+As a bonus you can write the transcript to a file such that you do not have to perform the transcription again in case you need to redo future steps.
 
 ### Splitter
 
-With the transcription, we have unstructured data that 
+With the transcription, we have unstructured data that can be used to populate a knowledge base.
+The first thing we need to do is split the text into chunks.
+To do this we have to implement a **splitter** function.
+Go to the `services/chunker.py` file and implement the default and semantic splitter.
+
+You can 
+
+This function should also be called in *pages/Upload_Data.py* after the transcript was generated or when a text file was uploaded.
+
+### Upload to QDrant
+
+Lastly we need to add the chunked text to the vector database. The QDrantCustomClient can be used for this. 
+Don't worry about calculating embeddings, the client has this covered.
+
 
 ## 3. Implement RAG retrieval strategies
 
