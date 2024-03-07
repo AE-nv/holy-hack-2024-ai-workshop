@@ -8,5 +8,6 @@ def transcribe(file):
 
     See: https://platform.openai.com/docs/guides/speech-to-text/quickstart 
     
+    Returns: String containing transcription of the file
     """
     print("Not Implemented yet.")
