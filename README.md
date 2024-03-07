@@ -24,6 +24,18 @@ This will spin up a docker container with a vector database called **QDrant** ru
 
 ## 2. Transcribing audio files using **Whisper**
 
+### Speech service
+
+Open up the `services/speech2text.py` file.
+
+Complete the `transcribe` function such that it transcribes a file given by the streamlit `st.FileUploader()`.
+The function should be called in *pages/Upload_Data.py*.
+
+
+### Splitter
+
+With the transcription, we have unstructured data that 
+
 ## 3. Implement RAG retrieval strategies
 
 ## 4. Implement Chatbot functionality with **Semantic Routing**
