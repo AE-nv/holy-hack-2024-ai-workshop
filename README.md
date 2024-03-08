@@ -19,7 +19,7 @@ Download the `.env` file. Make sure it is called .env.
 
 In order to make sure the environment is made in your root folder, run the following line
 
-`poetry config virtualenvs.in-project true`
+- `poetry config virtualenvs.in-project true`
 
 Run `poetry install` in the root folder. This will install the dependencies defined in pyproject.toml
 
@@ -28,10 +28,32 @@ Then you can use your environment by calling `poetry shell`.
 ### With Virtualenv
 If you have Virtualenv or Anaconda, you can use the *requirements.txt* file to install the dependencies.
 
+The simplest way with **virtualenv** for me would be:
+
+1. create local environment with the right Python executable (>= 3.9)!
+- `python -m virtualenv .venv`
+
+2. Activate the environment
+- (Windows)
+
+    - `.venv/Scripts/Activate.ps1` (Powershell)
+
+    - `.venv/Scripts/Activate.bat` (CMD)
+
+- (POSIX)
+
+    - `source /.venv/bin/activate`
+
+
+3. Install dependencies
+
+- `pip install -r requirements.txt`
+
+(With **venv** only the first step would be different `python -m venv .venv`)
 
 
 ## 1. Setting up QDrant
-This should be the easiest step! Make sure you have you Docker desktop running.
+This should be the easiest step! Make sure you have you **Docker desktop** running.
 Then open a terminal in the `vectordb` folder.
 run the command
 
