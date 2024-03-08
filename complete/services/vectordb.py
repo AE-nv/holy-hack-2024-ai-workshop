@@ -55,7 +55,6 @@ class QDrantCustomClient:
         """
 
         self._qdrant.collection_name = collection_name
-        print("Using retriever: ", method)
         if method == SearchMethod.MMR:
             return self._mmr(query, k=kwargs['k'], fetch_k=kwargs['fetch_k'])
         

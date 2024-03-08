@@ -151,16 +151,3 @@ with st.container(border=True):
 
     # Button to remove the selected option from the list
     st.button("Remove Selected collectionn", on_click=remove_collection)
-
-
-
-
-
-
-
-
-
-
-
-        
-# TODO:show overview of files found in qdrant 

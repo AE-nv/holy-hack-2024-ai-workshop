@@ -51,8 +51,6 @@ class SemanticRouter:
          # create route layer
         self._dl = RouteLayer(encoder=self._encoder, routes=self._routes)
 
-        self._sim_method = SearchMethod.MMR
-
         self._system_prompt_template = """
             You are a chatbot that has access to transcripts of the AE Air Data Podcast. Always tell the user that you found information from the Air Data Podcast. Here is the context that was found with RAG when searching for the user's question:
             <context>
@@ -61,11 +59,13 @@ class SemanticRouter:
         """
     def __call__(self, chat_history : List, collection_name : str, **kwargs):
         """
+        Call the semantic_layer function to semantically reroute the user query 
         """
         return self.semantic_layer(chat_history, collection_name, **kwargs)
 
     def semantic_layer(self, chat_history : List, collection_name : str, **kwargs):
         """
+        Reroute the user query and call the routed completion functions
         """
 
         last_user_message = chat_history[-1]['content']
@@ -83,16 +83,33 @@ class SemanticRouter:
 
     def _nonsense(self, chat_history : str):
         """
+        Route: Nonsense (default)
+        Respond to nonsense route 
+        :chat_history(string) : The user query
+
+        :returns: response, rag_context(None) 
         """
         return "That does not seem relevant to me", None
     
     def _chitchat_completion(self, chat_history : str):
         """
+        Route: greetings
+        Respond to greetings route 
+        :chat_history(string) : The user query
+
+        :returns: response, rag_context(None) 
         """
         return self._chat_model.invoke(chat_history).content, None
     
     def _rag_completion(self, chat_history : str, collection_name : str, **kwargs):
         """
+        Route: Air Data relevant query - Solve with RAG
+        Respond to airdata_rag route 
+        :chat_history(string) : The user query
+        :collection_name (string) : The collection of VectorDB to use for RAG
+        :**kwargs (Dict) : The parameters for the VectorDB retriever
+
+        :returns: response, rag_context
         """
 
         # perform RAG

@@ -1,4 +1,4 @@
-from st_pages import show_pages_from_config, add_page_title
+from st_pages import Page, add_page_title, show_pages
 import streamlit as st
 import os
 from services import transcribe, default_splitter, semantic_splitter
@@ -8,6 +8,16 @@ from Home import init_qdrantdb
 st.set_page_config(page_title="Upload Data",
                    page_icon=":books:",
                    layout="wide")
+
+# Specify what pages should be shown in the sidebar, and what their titles and icons
+# should be
+show_pages(
+    [
+        Page("pages/Upload_Data.py", "Upload Data", ":books:"),
+        Page("pages/RAG.py", "RAG", ":mag:"),
+        Page("Home.py", "Air Data Bot", ":robot_face:")
+    ]
+)
 
 load_dotenv()  # take environment variables from .env.
 
@@ -22,7 +32,18 @@ else:
 # collection selections
 st.session_state["collection_options"] = qdrant_client.get_collections()
 
+# recursive text options
+if "recursive_chunk_size" in st.session_state:
+    recursive_chunk_size = st.session_state["recursive_chunk_size"]
+else:
+    recursive_chunk_size = 1
+    st.session_state["recursive_chunk_size"] = recursive_chunk_size
 
+if "recursive_chunk_overlap" in st.session_state:
+    recursive_chunk_overlap = st.session_state["recursive_chunk_overlap"]
+else:
+    recursive_chunk_overlap = 1
+    st.session_state["recursive_chunk_overlap"] = recursive_chunk_overlap
 
 if len(st.session_state["collection_options"]) == 0:
     qdrant_client.create_collection(qdrant_client._collection_name)
@@ -67,8 +88,10 @@ def upload_files():
                     f.write(transcript)
                 
                 # split transcript
-                if selected_splitter == "recursive_text":
-                    docs = default_splitter(transcript)
+                if selected_splitter == "recursive text":
+                    docs = default_splitter(transcript, 
+                                            chunk_size=st.session_state["recursive_chunk_size"],
+                                            chunk_overlap=st.session_state["recursive_chunk_overlap"])
                 elif selected_splitter == "semantic":
                     docs = semantic_splitter(transcript, qdrant_client._qdrant.embeddings)
             
@@ -84,7 +107,6 @@ def upload_files():
 
             transcript = file_bytes.decode(errors='replace')
 
-            print(selected_splitter)
              # split transcript
             if selected_splitter == "recursive text":
                 docs = default_splitter(transcript)
@@ -108,7 +130,12 @@ with st.container(border=True):
 st.header("2.Splitter")
 with st.container(border=True): 
     selected_splitter = st.selectbox("Splitter function", ["recursive text", "semantic"])
-
+    print(selected_splitter)
+    if selected_splitter == "recursive text":
+        st.slider(label="chunk_size", min_value=1, max_value=1000, value=st.session_state["recursive_chunk_size"], key="recursive_chunk_size_value")
+        st.slider(label="chunk_overlap", min_value=1, max_value=1000, value=st.session_state["recursive_chunk_overlap"], key="recursive_chunk_overlap_value")
+        st.session_state["recursive_chunk_size"] = st.session_state["recursive_chunk_size_value"]
+        st.session_state["recursive_chunk_overlap"] = st.session_state["recursive_chunk_overlap_value"]
 st.header("3.Collection")
 with st.container(border=True):
     # Text input for user to enter a new option

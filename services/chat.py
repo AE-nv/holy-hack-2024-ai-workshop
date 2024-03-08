@@ -35,35 +35,53 @@ class SemanticRouter:
 
         # create route layer
 
-        # define default search method
-
         # define system prompt
         self._system_prompt_template = """
             TODO: write a system prompt
         """
         
-    def __call__(self, query : List, collection_name : str):
+    def __call__(self, query : List, collection_name : str, **kwargs):
         """
-        Calls the semantic_layer function to semantically reroute the user query 
+        Call the semantic_layer function to semantically reroute the user query 
         """
-        return self.semantic_layer(query, collection_name)
+        return self.semantic_layer(query, collection_name, **kwargs)
 
-    def semantic_layer(self, query : List, collection_name : str):
+    def semantic_layer(self, query : List, collection_name : str, **kwargs):
         """
         TODO: Reroute the user query and call the routed completion functions
         """
         print("Not Implemented yet.")
 
     
+    def _nonsense(self, chat_history : str):
+        """
+        Route: Nonsense (default)
+        Respond to nonsense route 
+        :chat_history(string) : The user query
+
+        :returns: response, rag_context(None) 
+        """
+        return "That does not seem relevant to me", None
+    
     def _chitchat_completion(self, query : str):
         """
         Route: greetings
+        Respond to greetings route 
+        :chat_history(string) : The user query
+
+        :returns: response, rag_context(None) 
         """
         print("Not Implemented yet.")
     
-    def _rag_completion(self, query : str, collection_name : str):
+    def _rag_completion(self, query : str, collection_name : str, **kwargs):
         """
         Route: Air Data relevant query - Solve with RAG
+        Respond to airdata_rag route 
+        :chat_history(string) : The user query
+        :collection_name (string) : The collection of VectorDB to use for RAG
+        :**kwargs (Dict) : The parameters for the VectorDB retriever
+
+        :returns: response, rag_context
         """
 
         print("Not Implemented yet.")

@@ -10,19 +10,6 @@ from langchain_openai import AzureOpenAIEmbeddings
 
 def default_splitter(text : str, chunk_size : int = 150, chunk_overlap : int = 50):
     """
-    :param text_files: List of paths to files
-    """# services/chunker.py
-# Split text files to store into vectorDb with embeddings
-
-from typing import List
-from langchain_core.documents.base import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_experimental.text_splitter import SemanticChunker
-from langchain_openai import AzureOpenAIEmbeddings
-
-
-def default_splitter(text : str, chunk_size : int = 150, chunk_overlap : int = 50):
-    """
     TODO: Split a text using the RecursiveCharacterTextSplitter.
     LangChain Reference: 
 
