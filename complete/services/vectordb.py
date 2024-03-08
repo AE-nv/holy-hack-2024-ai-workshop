@@ -41,7 +41,7 @@ class QDrantCustomClient:
 
         
         
-    def __call__(self, query : str, collection_name : str, method : SearchMethod = SearchMethod.MMR):
+    def __call__(self, query : str, collection_name : str, method : SearchMethod = SearchMethod.MMR, **kwargs):
         """
         Performs a similarity search on a Qdrant Vector DB using the specified search method.
 
@@ -55,15 +55,15 @@ class QDrantCustomClient:
         """
 
         self._qdrant.collection_name = collection_name
-
+        print("Using retriever: ", method)
         if method == SearchMethod.MMR:
-            return self._mmr(query)
+            return self._mmr(query, k=kwargs['k'], fetch_k=kwargs['fetch_k'])
         
         elif method == SearchMethod.SCORE:
-            return self._score(query)
+            return self._score(query, k=kwargs['k'])
         
         else:
-            return self._simsearch(query)
+            return self._simsearch(query, k=kwargs['k'])
            
 
     def add_documents(self, docs : List[Document], collection_name : str = None):
@@ -121,9 +121,9 @@ class QDrantCustomClient:
             The search results.
         """
 
-        found_docs = self._qdrant.similarity_search_with_score(query, k=k)
-
-        return found_docs
+        found_docs_with_scores = self._qdrant.similarity_search_with_score(query, k=k)
+        
+        return found_docs_with_scores
     
     def _simsearch(self, query : str, k : int = 4):
         """

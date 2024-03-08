@@ -29,6 +29,7 @@ class SemanticRouter:
             name="chitchat",
             utterances= [
                 "Hi, how are you?",
+                "Hi, can you help me?"
                 "What do you do?",
                 "lovely weather today"
             ]
@@ -58,12 +59,12 @@ class SemanticRouter:
             {rag_context}
             <context>
         """
-    def __call__(self, chat_history : List, collection_name : str):
+    def __call__(self, chat_history : List, collection_name : str, **kwargs):
         """
         """
-        return self.semantic_layer(chat_history, collection_name)
+        return self.semantic_layer(chat_history, collection_name, **kwargs)
 
-    def semantic_layer(self, chat_history : List, collection_name : str):
+    def semantic_layer(self, chat_history : List, collection_name : str, **kwargs):
         """
         """
 
@@ -74,7 +75,7 @@ class SemanticRouter:
         if route.name == "chitchat":
             return self._chitchat_completion(last_user_message)
         elif route.name == "airdata_rag":
-            return self._rag_completion(last_user_message, collection_name)
+            return self._rag_completion(last_user_message, collection_name, **kwargs)
         
         else:
             return self._nonsense(last_user_message)
@@ -90,15 +91,22 @@ class SemanticRouter:
         """
         return self._chat_model.invoke(chat_history).content, None
     
-    def _rag_completion(self, chat_history : str, collection_name : str):
+    def _rag_completion(self, chat_history : str, collection_name : str, **kwargs):
         """
         """
 
         # perform RAG
-        hits = self._vectordb(chat_history, collection_name, self._sim_method)
+        selected_method = kwargs["method"]
+        kwargs.pop("method")
+        hits = self._vectordb(chat_history, collection_name, method=selected_method, **kwargs)
 
         # call completion with context from hits
-        context = "\n".join([doc.page_content for doc in hits])
+        if selected_method == SearchMethod.SCORE:
+            
+            context = "\n".join([doc[0].page_content for doc in hits])
+        else:
+            context = "\n".join([doc.page_content for doc in hits])
+
         messages = [
             SystemMessage(content=self._system_prompt_template.format(rag_context=context)),
             HumanMessage(content=chat_history)

@@ -1,6 +1,6 @@
 import streamlit as st
 from st_pages import Page, add_page_title, show_pages
-from services import QDrantCustomClient, SemanticRouter
+from services import QDrantCustomClient, SemanticRouter, SearchMethod
 from langchain_openai import AzureOpenAIEmbeddings
 from dotenv import load_dotenv
 import os
@@ -74,6 +74,27 @@ if "selected_collection" not in st.session_state:
     
 selected_collection = st.session_state["selected_collection"]
 
+# RAG retriever settings
+if "rag_k" not in st.session_state:
+    st.session_state["rag_k"] = 1
+
+if "rag_fetch_k" not in st.session_state:
+    st.session_state["rag_fetch_k"] = 2
+
+if "rag_options" not in st.session_state:
+    st.session_state["rag_options"] = ["score", "simsearch", "mmr"]
+
+if "selected_rag" not in st.session_state:
+    st.session_state["selected_rag"] = st.session_state["rag_options"][0]
+    
+retriever_kwargs = {
+    'k' : st.session_state["rag_k"],
+    'fetch_k' : st.session_state["rag_fetch_k"],
+    'method' : SearchMethod(st.session_state["selected_rag"])
+}
+
+
+### FRONTEND
 welcome_message = """
 ### Welcome to the Air Data Chatbot!
 
@@ -114,18 +135,25 @@ if prompt := st.chat_input("What is up?"):
     
 
     ### Functionality 3 - Chatbot
-    response, rag_context = semantic_router(st.session_state["messages"], selected_collection)
+    response, rag_context = semantic_router(st.session_state["messages"], selected_collection, **retriever_kwargs)
 
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(response)
         if rag_context is not None:
-            print("Adding rag context")
             st.markdown("**sources**")
             for idx, doc in enumerate(rag_context):
-                st.markdown(f"**{idx+1}.**")
+                print(doc)
+                score = None
+                if st.session_state["selected_rag"] == "score":
+                    score = doc[1]
+                    doc = doc[0]
+                    st.markdown(f"**{idx+1}.({score})**")
+                    
+                else:
+                    st.markdown(f"**{idx+1}.**")
                 st.markdown(f"{doc.page_content}")
-
+                
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})
 

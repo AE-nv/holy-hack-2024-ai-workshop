@@ -1,5 +1,5 @@
 # holy-hack-2024-ai-workshop
-
+![alt text](http://url/to/img.png)
 This Streamlit application uses Retrieval Augmented Generation (RAG) so you can learn about podcasts from the AE Air Data Podcast!
 This repository is meant to be a code-along exercise, however the solution is found under the `complete` folder.
 
